@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>얼굴 수박게임 🍉</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<section id="screen-upload" class="screen active">
+  <h1>얼굴 수박게임 🍉</h1>
+  <p class="hint">
+    친구들·가족 사진을 올려주세요. 브라우저 안에서 자동으로 얼굴을 찾아 크롭합니다.
+    사진은 기기 밖으로 전송되지 않습니다 (단, 얼굴 자동 인식에는 인터넷 연결이 필요해요).
+  </p>
+  <input type="file" id="file-input" accept="image/*" multiple>
+  <div id="upload-status"></div>
+
+  <button type="button" id="btn-manual-mode">사진에서 직접 얼굴 추가</button>
+  <input type="file" id="manual-file-input" accept="image/*" class="hidden">
+
+  <div id="manual-crop-panel" class="hidden">
+    <p>얼굴 위치를 클릭/터치하고 크기를 조절한 뒤 추가하세요.</p>
+    <canvas id="manual-canvas"></canvas>
+    <label>크롭 크기: <input type="range" id="manual-size" min="40" max="500" value="150"></label>
+    <div>
+      <button type="button" id="manual-add-btn">이 위치 추가</button>
+      <button type="button" id="manual-done-btn">완료</button>
+    </div>
+  </div>
+
+  <div id="face-gallery"></div>
+  <button type="button" id="btn-to-topic" disabled>다음</button>
+</section>
+
+<section id="screen-topic" class="screen">
+  <h1>웃긴 순위 주제 고르기</h1>
+  <p class="hint">주제를 고르면 얼굴들의 순위(단계)가 랜덤으로 정해져요.</p>
+  <div id="topic-presets"></div>
+  <div id="custom-topic-row">
+    <input type="text" id="custom-topic-input" placeholder="직접 순위 주제 입력하기">
+    <button type="button" id="btn-custom-topic">시작!</button>
+  </div>
+</section>
+
+<section id="screen-reveal" class="screen">
+  <h1 id="reveal-topic-title"></h1>
+  <div id="reveal-cards"></div>
+  <button type="button" id="btn-reveal-skip">건너뛰기</button>
+  <button type="button" id="btn-reveal-continue" class="hidden">게임 시작!</button>
+</section>
+
+<section id="screen-game" class="screen">
+  <div class="game-wrap">
+    <div class="game-header">
+      <div id="topic-banner"></div>
+      <div class="score-board">점수: <span id="score-val">0</span> · 최고: <span id="best-val">0</span></div>
+      <div id="next-preview"></div>
+    </div>
+    <div class="game-main">
+      <canvas id="game-canvas"></canvas>
+      <aside class="ladder" id="ladder-list"></aside>
+    </div>
+  </div>
+
+  <div id="gameover-overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>게임 오버!</h2>
+      <p id="gameover-score"></p>
+      <button type="button" id="btn-retry">다시하기</button>
+      <button type="button" id="btn-retopic">주제 다시 뽑기</button>
+      <button type="button" id="btn-restart-all">처음부터</button>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/state.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/faceDetect.js"></script>
+<script src="js/screenUpload.js"></script>
+<script src="js/screenTopic.js"></script>
+<script src="js/screenReveal.js"></script>
+<script src="js/game.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
