@@ -5,8 +5,15 @@ App.CONFIG = (function () {
 
   var TIER_RADII = [16, 24, 32, 40, 52, 64, 78, 94, 114, 140];
 
-  var EMOJI_FALLBACK = ['😀', '🙂', '😌', '😎', '🤩',
-    '🥳', '😱', '🤯', '👑', '🐐'];
+  // Tiers 1~9 (index 0~8) fall back to these fruit emojis until the user adds
+  // real artwork as image/tier1.png ... image/tier9.png. Tier 10 is always the
+  // watermelon image.
+  var TIER_FRUIT_EMOJI = ['🍒', '🍓', '🍇', '🍊', '🍎', '🍐', '🍑', '🍍', '🍈'];
+  var WATERMELON_IMAGE = 'image/watermelon.png';
+  var TIER_IMAGE_PATHS = [];
+  for (var ti = 1; ti <= 9; ti++) {
+    TIER_IMAGE_PATHS.push('image/tier' + ti + '.png');
+  }
 
   var TOPIC_PRESETS = [
     '방구냄새 가장 지독할 것 같은 순위',
@@ -53,7 +60,9 @@ App.CONFIG = (function () {
   return {
     TIER_COUNT: TIER_COUNT,
     TIER_RADII: TIER_RADII,
-    EMOJI_FALLBACK: EMOJI_FALLBACK,
+    TIER_FRUIT_EMOJI: TIER_FRUIT_EMOJI,
+    WATERMELON_IMAGE: WATERMELON_IMAGE,
+    TIER_IMAGE_PATHS: TIER_IMAGE_PATHS,
     TOPIC_PRESETS: TOPIC_PRESETS,
     DROPPABLE_TIERS: DROPPABLE_TIERS,
     PHYSICS: PHYSICS,

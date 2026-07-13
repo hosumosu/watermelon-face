@@ -292,7 +292,8 @@ button:not(:disabled):active {
   font-size: 0.75rem;
 }
 
-.ladder-item img {
+.ladder-item img,
+.ladder-item canvas {
   width: 22px;
   height: 22px;
   border-radius: 5px;
@@ -300,7 +301,8 @@ button:not(:disabled):active {
   object-fit: contain;
 }
 
-#next-preview img {
+#next-preview img,
+#next-preview canvas {
   width: 30px;
   height: 30px;
   border-radius: 6px;

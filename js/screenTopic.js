@@ -5,29 +5,24 @@ App.ScreenTopic = (function () {
 
   function assignTiers() {
     var total = App.CONFIG.TIER_COUNT;
-    var n = App.state.faces.length;
     var tiers = new Array(total).fill(null);
 
-    if (n > 0) {
-      var lowerBound = Math.max(total - n - 2, 3);
-      var candidates = [];
-      for (var i = lowerBound; i < total; i++) candidates.push(i);
-      while (candidates.length < n) {
-        lowerBound--;
-        candidates.unshift(lowerBound);
-      }
-      var shuffledCandidates = App.shuffle(candidates);
-      var faceSlots = shuffledCandidates.slice(0, n).sort(function (a, b) { return a - b; });
-      var shuffledFaces = App.shuffle(App.state.faces);
+    // The final tier is always the watermelon.
+    tiers[total - 1] = { type: 'watermelon' };
 
-      faceSlots.forEach(function (tierIdx, idx) {
-        tiers[tierIdx] = { type: 'face', face: shuffledFaces[idx] };
-      });
-    }
+    // Faces land on random tiers among 1~9 (index 0~8); at most 9 are used.
+    var faces = App.shuffle(App.state.faces).slice(0, total - 1);
+    var slots = [];
+    for (var i = 0; i < total - 1; i++) slots.push(i);
+    slots = App.shuffle(slots).slice(0, faces.length);
+    slots.forEach(function (tierIdx, idx) {
+      tiers[tierIdx] = { type: 'face', face: faces[idx] };
+    });
 
-    for (var t = 0; t < total; t++) {
+    // Remaining tiers use the fixed fruit lineup.
+    for (var t = 0; t < total - 1; t++) {
       if (!tiers[t]) {
-        tiers[t] = { type: 'emoji', emoji: App.CONFIG.EMOJI_FALLBACK[t] };
+        tiers[t] = { type: 'fruit', fruitIndex: t };
       }
     }
 

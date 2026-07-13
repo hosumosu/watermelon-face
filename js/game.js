@@ -47,14 +47,26 @@ App.Game = (function () {
     return pool[Math.floor(Math.random() * pool.length)];
   }
 
+  // Renders a sprite into a small display canvas. Used instead of toDataURL
+  // so sprites containing local image files still work on file:// (tainted
+  // canvases can be drawn, just not exported).
+  function spriteThumb(sprite, sizePx) {
+    var c = document.createElement('canvas');
+    var dpr = window.devicePixelRatio || 1;
+    c.width = Math.round(sizePx * dpr);
+    c.height = Math.round(sizePx * dpr);
+    c.style.width = sizePx + 'px';
+    c.style.height = sizePx + 'px';
+    c.getContext('2d').drawImage(sprite, 0, 0, c.width, c.height);
+    return c;
+  }
+
   function prepareNextDrop() {
     nextDropTierIndex = randomDroppableTier();
     var preview = document.getElementById('next-preview');
     if (preview && App.state.tiers[nextDropTierIndex]) {
       preview.innerHTML = '';
-      var img = document.createElement('img');
-      img.src = App.state.tiers[nextDropTierIndex].spriteCanvas.toDataURL();
-      preview.appendChild(img);
+      preview.appendChild(spriteThumb(App.state.tiers[nextDropTierIndex].spriteCanvas, 30));
     }
   }
 
@@ -170,11 +182,10 @@ App.Game = (function () {
       var t = App.state.tiers[i];
       var item = document.createElement('div');
       item.className = 'ladder-item';
-      var img = document.createElement('img');
-      img.src = t.spriteCanvas.toDataURL();
+      var thumb = spriteThumb(t.spriteCanvas, 22);
       var label = document.createElement('span');
       label.textContent = (i + 1) + '단계';
-      item.appendChild(img);
+      item.appendChild(thumb);
       item.appendChild(label);
       list.appendChild(item);
     }

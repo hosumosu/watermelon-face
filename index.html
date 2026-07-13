@@ -11,8 +11,9 @@
 <section id="screen-upload" class="screen active">
   <h1>얼굴 수박게임 🍉</h1>
   <p class="hint">
-    친구들·가족 사진을 올려주세요. 브라우저 안에서 자동으로 얼굴을 찾아 크롭합니다.
-    사진은 기기 밖으로 전송되지 않습니다 (단, 얼굴 자동 인식에는 인터넷 연결이 필요해요).
+    친구들·가족 사진을 올려주세요 (여러 장 선택 가능, 올릴 때마다 얼굴이 계속 추가돼요).
+    브라우저 안에서 자동으로 얼굴을 찾아 크롭하며, 사진은 기기 밖으로 전송되지 않습니다
+    (단, 얼굴 자동 인식에는 인터넷 연결이 필요해요).
   </p>
   <input type="file" id="file-input" accept="image/*" multiple>
   <div id="upload-status"></div>
@@ -79,6 +80,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.js"></script>
 
 <script src="js/config.js"></script>
+<script src="js/assets.js"></script>
 <script src="js/state.js"></script>
 <script src="js/sprites.js"></script>
 <script src="js/faceDetect.js"></script>

@@ -25,10 +25,15 @@ App.ScreenReveal = (function () {
     var front = document.createElement('div');
     front.className = 'reveal-face-front hidden';
     var img = document.createElement('img');
-    img.src = entry.face.canvas.toDataURL();
     var caption = document.createElement('div');
     caption.className = 'reveal-caption';
-    caption.textContent = rankLabel(entry.tierIndex) + ' · ' + entry.face.name;
+    if (entry.type === 'watermelon') {
+      img.src = App.CONFIG.WATERMELON_IMAGE;
+      caption.textContent = '1위 · 수박 🍉';
+    } else {
+      img.src = entry.face.canvas.toDataURL();
+      caption.textContent = rankLabel(entry.tierIndex) + ' · ' + entry.face.name;
+    }
     front.appendChild(img);
     front.appendChild(caption);
 
@@ -58,13 +63,15 @@ App.ScreenReveal = (function () {
     document.getElementById('btn-reveal-continue').classList.add('hidden');
     document.getElementById('btn-reveal-skip').classList.remove('hidden');
 
-    var faceEntries = [];
+    var entries = [];
     App.state.tiers.forEach(function (t, i) {
-      if (t.type === 'face') faceEntries.push({ face: t.face, tierIndex: i });
+      if (t.type === 'face') entries.push({ type: 'face', face: t.face, tierIndex: i });
     });
+    // The watermelon is always rank 1 — revealed last for the punchline.
+    entries.push({ type: 'watermelon' });
 
-    for (var i = 0; i < faceEntries.length; i++) {
-      await revealOne(faceEntries[i], i === faceEntries.length - 1, container);
+    for (var i = 0; i < entries.length; i++) {
+      await revealOne(entries[i], i === entries.length - 1, container);
     }
 
     document.getElementById('btn-reveal-skip').classList.add('hidden');
@@ -80,9 +87,11 @@ App.ScreenReveal = (function () {
       skip = true;
     });
     document.getElementById('btn-reveal-continue').addEventListener('click', function () {
-      App.Sprites.prepareAllTierSprites();
-      App.showScreen('game');
-      App.Game.start();
+      App.Assets.preload().then(function () {
+        App.Sprites.prepareAllTierSprites();
+        App.showScreen('game');
+        App.Game.start();
+      });
     });
   }
 

@@ -18,6 +18,7 @@ window.App = window.App || {};
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    App.Assets.preload();
     App.ScreenUpload.init();
     App.ScreenTopic.render();
     App.ScreenReveal.init();
