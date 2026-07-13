@@ -1,0 +1,22 @@
+{
+  "name": "watermelon-face",
+  "version": "1.0.0",
+  "private": true,
+  "description": "얼굴 수박게임 — 앱인토스 미니앱",
+  "scripts": {
+    "dev": "granite dev",
+    "build": "ait build",
+    "deploy": "ait deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hosumosu/watermelon-face.git"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {},
+  "devDependencies": {
+    "@apps-in-toss/web-framework": "^2.10.6",
+    "vite": "^8.1.4"
+  }
+}

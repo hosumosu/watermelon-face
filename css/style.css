@@ -258,6 +258,13 @@ button:not(:disabled):active {
   font-size: 1rem;
 }
 
+.mute-btn {
+  background: transparent;
+  padding: 4px 8px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 .game-main {
   display: flex;
   gap: 12px;

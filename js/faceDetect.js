@@ -1,18 +1,27 @@
 window.App = window.App || {};
 
 App.FaceDetect = (function () {
-  var MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model';
+  // Local bundled models first; CDN fallback covers file:// where local
+  // fetch is blocked by the browser.
+  var LOCAL_MODEL_URL = 'model';
+  var CDN_MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/model';
   var modelsLoaded = false;
   var modelLoadPromise = null;
   var OUT_SIZE = 256;
 
+  function loadFrom(url) {
+    return Promise.all([
+      faceapi.nets.ssdMobilenetv1.loadFromUri(url),
+      faceapi.nets.faceLandmark68Net.loadFromUri(url)
+    ]);
+  }
+
   function loadModels() {
     if (modelsLoaded) return Promise.resolve();
     if (modelLoadPromise) return modelLoadPromise;
-    modelLoadPromise = Promise.all([
-      faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-      faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL)
-    ]).then(function () { modelsLoaded = true; })
+    modelLoadPromise = loadFrom(LOCAL_MODEL_URL)
+      .catch(function () { return loadFrom(CDN_MODEL_URL); })
+      .then(function () { modelsLoaded = true; })
       .catch(function (err) { modelLoadPromise = null; throw err; });
     return modelLoadPromise;
   }

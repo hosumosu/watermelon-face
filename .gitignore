@@ -1,1 +1,6 @@
 .claude/
+
+.granite
+node_modules/
+dist/
+*.ait

@@ -26,6 +26,7 @@ App.Game = (function () {
   }
 
   function playPop() {
+    if (App.state.muted) return;
     try {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       var osc = audioCtx.createOscillator();

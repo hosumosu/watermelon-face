@@ -3,10 +3,24 @@ window.App = window.App || {};
 App.state = {
   faces: [],      // [{ id, canvas, name }]
   topic: '',
-  tiers: [],      // length 10: { type:'face'|'emoji', face|emoji, spriteCanvas, label }
+  tiers: [],      // length 10: { type:'face'|'fruit'|'watermelon', ..., spriteCanvas, label }
   score: 0,
   bestScore: parseInt(localStorage.getItem('faceSuikaBest') || '0', 10) || 0,
+  muted: localStorage.getItem('faceSuikaMuted') === '1',
+  userId: (function () {
+    var id = localStorage.getItem('faceSuikaUserId');
+    if (!id) {
+      id = 'u-' + Math.random().toString(36).slice(2) + '-' + Date.now().toString(36);
+      localStorage.setItem('faceSuikaUserId', id);
+    }
+    return id;
+  })(),
   faceIdCounter: 0
+};
+
+App.setMuted = function (muted) {
+  App.state.muted = muted;
+  localStorage.setItem('faceSuikaMuted', muted ? '1' : '0');
 };
 
 App.nextFaceId = function () {

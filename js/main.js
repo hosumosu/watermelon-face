@@ -17,8 +17,19 @@ window.App = window.App || {};
     });
   }
 
+  function bindMuteButton() {
+    var btn = document.getElementById('btn-mute');
+    function refresh() { btn.textContent = App.state.muted ? '🔇' : '🔊'; }
+    btn.addEventListener('click', function () {
+      App.setMuted(!App.state.muted);
+      refresh();
+    });
+    refresh();
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     App.Assets.preload();
+    bindMuteButton();
     App.ScreenUpload.init();
     App.ScreenTopic.render();
     App.ScreenReveal.init();
