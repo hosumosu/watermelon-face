@@ -167,7 +167,7 @@ App.FaceDetect = (function () {
 
     // Pull the contour toward a circle so the cutout looks rounder than the
     // raw jaw+brow outline (which tends to be a tall oval).
-    var ROUNDNESS = 0.5;
+    var ROUNDNESS = 0.68;
     var ccx = 0, ccy = 0;
     contour.forEach(function (p) { ccx += p.x; ccy += p.y; });
     ccx /= contour.length;
@@ -198,7 +198,7 @@ App.FaceDetect = (function () {
     var region = squareRegion(sourceCanvas, { x: cx - side / 2, y: cy - side / 2, width: side, height: side }, 1.0);
     var cropCanvas = drawRegionToCanvas(sourceCanvas, region);
 
-    var rx = cropCanvas.width * 0.45;
+    var rx = cropCanvas.width * 0.46;
     var ry = cropCanvas.height * 0.47;
     var ecx = cropCanvas.width / 2, ecy = cropCanvas.height / 2;
 

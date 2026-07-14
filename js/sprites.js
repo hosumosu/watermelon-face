@@ -22,11 +22,51 @@ App.Sprites = (function () {
     canvas.width = diameter;
     canvas.height = diameter;
     var ctx = canvas.getContext('2d');
-    ctx.font = Math.round(diameter * 0.95) + 'px "Segoe UI Emoji","Apple Color Emoji",sans-serif';
+    // Drawn deliberately small so no glyph clips the canvas; the fill level
+    // is unified afterwards by normalizeSpriteFill.
+    ctx.font = Math.round(diameter * 0.8) + 'px "Segoe UI Emoji","Apple Color Emoji",sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(emoji, diameter / 2, diameter / 2 * 1.05);
+    ctx.fillText(emoji, diameter / 2, diameter / 2);
     return canvas;
+  }
+
+  // Rescales a sprite so its opaque content exactly fills the canvas.
+  // Different sources (emoji glyphs, face cutouts, photos) leave different
+  // margins, which made ball art sit inconsistently against the physics
+  // circle — some touching, some with visible gaps. Returns the canvas
+  // unchanged when pixel access is blocked (tainted canvas on file://).
+  function normalizeSpriteFill(canvas, fill) {
+    var w = canvas.width, h = canvas.height;
+    var data;
+    try {
+      data = canvas.getContext('2d').getImageData(0, 0, w, h).data;
+    } catch (e) {
+      return canvas;
+    }
+    var minX = w, minY = h, maxX = -1, maxY = -1;
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        if (data[(y * w + x) * 4 + 3] > 16) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
+      }
+    }
+    if (maxX < 0) return canvas;
+    var bw = maxX - minX + 1, bh = maxY - minY + 1;
+    var scale = (Math.min(w, h) * fill) / Math.max(bw, bh);
+    var out = document.createElement('canvas');
+    out.width = w;
+    out.height = h;
+    var dw = bw * scale, dh = bh * scale;
+    out.getContext('2d').drawImage(
+      canvas, minX, minY, bw, bh,
+      (w - dw) / 2, (h - dh) / 2, dw, dh
+    );
+    return out;
   }
 
   // Removes the white background that surrounds artwork like the watermelon
@@ -103,6 +143,7 @@ App.Sprites = (function () {
         t.spriteCanvas = fruitImg ? makeImageSprite(fruitImg, i) : makeEmojiSprite(emoji, i);
         t.label = emoji;
       }
+      t.spriteCanvas = normalizeSpriteFill(t.spriteCanvas, 0.98);
     }
   }
 
