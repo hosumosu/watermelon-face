@@ -200,6 +200,8 @@ App.Game = (function () {
     if (inputBound) return;
     inputBound = true;
 
+    var aiming = false;
+
     function pointerXFromEvent(e) {
       var rect = canvas.getBoundingClientRect();
       var clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
@@ -212,8 +214,20 @@ App.Game = (function () {
 
     canvas.addEventListener('pointerdown', function (e) {
       e.preventDefault();
+      try { canvas.setPointerCapture(e.pointerId); } catch (e2) {}
+      aiming = true;
       aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[nextDropTierIndex]);
+    });
+
+    canvas.addEventListener('pointerup', function (e) {
+      if (!aiming) return;
+      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[nextDropTierIndex]);
+      aiming = false;
       dropCurrent();
+    });
+
+    canvas.addEventListener('pointercancel', function () {
+      aiming = false;
     });
 
     canvas.style.touchAction = 'none';
@@ -246,7 +260,9 @@ App.Game = (function () {
 
     for (var i = 0; i < balls.length; i++) {
       var b = balls[i];
-      var sprite = App.state.tiers[b.plugin.tierIndex].spriteCanvas;
+      var tier = App.state.tiers[b.plugin.tierIndex];
+      if (!tier || !tier.spriteCanvas) continue;
+      var sprite = tier.spriteCanvas;
       var r = CONFIG.TIER_RADII[b.plugin.tierIndex];
       ctx.save();
       ctx.translate(b.position.x, b.position.y);
@@ -256,20 +272,23 @@ App.Game = (function () {
     }
 
     if (!gameOverFlag) {
-      var previewR = CONFIG.TIER_RADII[nextDropTierIndex];
-      var sprite2 = App.state.tiers[nextDropTierIndex].spriteCanvas;
-      ctx.save();
-      ctx.globalAlpha = 0.85;
-      ctx.drawImage(sprite2, aimX - previewR, CONFIG.SPAWN_Y - previewR, previewR * 2, previewR * 2);
-      ctx.restore();
+      var nextTier = App.state.tiers[nextDropTierIndex];
+      if (nextTier && nextTier.spriteCanvas) {
+        var previewR = CONFIG.TIER_RADII[nextDropTierIndex];
+        var sprite2 = nextTier.spriteCanvas;
+        ctx.save();
+        ctx.globalAlpha = 0.85;
+        ctx.drawImage(sprite2, aimX - previewR, CONFIG.SPAWN_Y - previewR, previewR * 2, previewR * 2);
+        ctx.restore();
 
-      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-      ctx.setLineDash([4, 6]);
-      ctx.beginPath();
-      ctx.moveTo(aimX, CONFIG.SPAWN_Y + previewR);
-      ctx.lineTo(aimX, CONFIG.BOARD_HEIGHT);
-      ctx.stroke();
-      ctx.setLineDash([]);
+        ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath();
+        ctx.moveTo(aimX, CONFIG.SPAWN_Y + previewR);
+        ctx.lineTo(aimX, CONFIG.BOARD_HEIGHT);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
     }
   }
 

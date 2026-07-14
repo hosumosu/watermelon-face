@@ -6,9 +6,11 @@ window.App = window.App || {};
       App.Game.start();
     });
     document.getElementById('btn-retopic').addEventListener('click', function () {
+      App.Game.stop();
       App.showScreen('topic');
     });
     document.getElementById('btn-restart-all').addEventListener('click', function () {
+      App.Game.stop();
       App.state.faces = [];
       App.state.tiers = [];
       App.state.topic = '';
