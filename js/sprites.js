@@ -22,7 +22,7 @@ App.Sprites = (function () {
     canvas.width = diameter;
     canvas.height = diameter;
     var ctx = canvas.getContext('2d');
-    ctx.font = Math.round(diameter * 0.82) + 'px "Segoe UI Emoji","Apple Color Emoji",sans-serif';
+    ctx.font = Math.round(diameter * 0.95) + 'px "Segoe UI Emoji","Apple Color Emoji",sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(emoji, diameter / 2, diameter / 2 * 1.05);

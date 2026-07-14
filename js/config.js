@@ -53,6 +53,10 @@ App.CONFIG = (function () {
   var SPAWN_GRACE_MS = 1000;
   var DROP_COOLDOWN_MS = 600;
 
+  // Sprites are drawn slightly larger than the physics circle so fruits look
+  // packed together instead of leaving visible gaps.
+  var BALL_VISUAL_SCALE = 1.12;
+
   function scoreForTier(tierIndex) {
     return ((tierIndex + 1) * (tierIndex + 2) / 2) * 10;
   }
@@ -73,6 +77,7 @@ App.CONFIG = (function () {
     DANGER_TIME_MS: DANGER_TIME_MS,
     SPAWN_GRACE_MS: SPAWN_GRACE_MS,
     DROP_COOLDOWN_MS: DROP_COOLDOWN_MS,
+    BALL_VISUAL_SCALE: BALL_VISUAL_SCALE,
     scoreForTier: scoreForTier
   };
 })();

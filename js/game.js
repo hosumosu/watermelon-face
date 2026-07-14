@@ -264,10 +264,11 @@ App.Game = (function () {
       if (!tier || !tier.spriteCanvas) continue;
       var sprite = tier.spriteCanvas;
       var r = CONFIG.TIER_RADII[b.plugin.tierIndex];
+      var vr = r * CONFIG.BALL_VISUAL_SCALE;
       ctx.save();
       ctx.translate(b.position.x, b.position.y);
       ctx.rotate(b.angle);
-      ctx.drawImage(sprite, -r, -r, r * 2, r * 2);
+      ctx.drawImage(sprite, -vr, -vr, vr * 2, vr * 2);
       ctx.restore();
     }
 
@@ -275,10 +276,11 @@ App.Game = (function () {
       var nextTier = App.state.tiers[nextDropTierIndex];
       if (nextTier && nextTier.spriteCanvas) {
         var previewR = CONFIG.TIER_RADII[nextDropTierIndex];
+        var previewVr = previewR * CONFIG.BALL_VISUAL_SCALE;
         var sprite2 = nextTier.spriteCanvas;
         ctx.save();
         ctx.globalAlpha = 0.85;
-        ctx.drawImage(sprite2, aimX - previewR, CONFIG.SPAWN_Y - previewR, previewR * 2, previewR * 2);
+        ctx.drawImage(sprite2, aimX - previewVr, CONFIG.SPAWN_Y - previewVr, previewVr * 2, previewVr * 2);
         ctx.restore();
 
         ctx.strokeStyle = 'rgba(0,0,0,0.15)';
