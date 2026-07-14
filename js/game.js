@@ -49,7 +49,18 @@ App.Game = (function () {
 
   function randomDroppableTier() {
     var pool = CONFIG.DROPPABLE_TIERS;
-    return pool[Math.floor(Math.random() * pool.length)];
+    var weights = CONFIG.DROP_WEIGHTS;
+    if (!weights || weights.length !== pool.length) {
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+    var total = 0;
+    for (var i = 0; i < weights.length; i++) total += weights[i];
+    var roll = Math.random() * total;
+    for (var j = 0; j < weights.length; j++) {
+      roll -= weights[j];
+      if (roll < 0) return pool[j];
+    }
+    return pool[pool.length - 1];
   }
 
   // Renders a sprite into a small display canvas. Used instead of toDataURL

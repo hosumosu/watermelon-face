@@ -35,6 +35,10 @@ App.CONFIG = (function () {
 
   var DROPPABLE_TIERS = [0, 1, 2, 3, 4];
 
+  // Drop probability weights, matching DROPPABLE_TIERS by index. Smaller
+  // fruits appear more often, like the original suika game (30/30/20/12/8%).
+  var DROP_WEIGHTS = [30, 30, 20, 12, 8];
+
   var PHYSICS = {
     restitution: 0.1,
     friction: 0.5,
@@ -69,6 +73,7 @@ App.CONFIG = (function () {
     TIER_IMAGE_PATHS: TIER_IMAGE_PATHS,
     TOPIC_PRESETS: TOPIC_PRESETS,
     DROPPABLE_TIERS: DROPPABLE_TIERS,
+    DROP_WEIGHTS: DROP_WEIGHTS,
     PHYSICS: PHYSICS,
     BOARD_WIDTH: BOARD_WIDTH,
     BOARD_HEIGHT: BOARD_HEIGHT,
