@@ -165,6 +165,25 @@ App.FaceDetect = (function () {
     });
     var contour = jaw.concat(brow);
 
+    // Pull the contour toward a circle so the cutout looks rounder than the
+    // raw jaw+brow outline (which tends to be a tall oval).
+    var ROUNDNESS = 0.5;
+    var ccx = 0, ccy = 0;
+    contour.forEach(function (p) { ccx += p.x; ccy += p.y; });
+    ccx /= contour.length;
+    ccy /= contour.length;
+    var avgR = 0;
+    contour.forEach(function (p) {
+      avgR += Math.sqrt((p.x - ccx) * (p.x - ccx) + (p.y - ccy) * (p.y - ccy));
+    });
+    avgR /= contour.length;
+    contour = contour.map(function (p) {
+      var dx = p.x - ccx, dy = p.y - ccy;
+      var d = Math.sqrt(dx * dx + dy * dy) || 1;
+      var f = 1 + (avgR / d - 1) * ROUNDNESS;
+      return { x: ccx + dx * f, y: ccy + dy * f };
+    });
+
     var maskCanvas = featheredMask(cropCanvas.width, cropCanvas.height, function (mctx) {
       tracePolygonSmooth(mctx, contour);
     });
@@ -179,8 +198,8 @@ App.FaceDetect = (function () {
     var region = squareRegion(sourceCanvas, { x: cx - side / 2, y: cy - side / 2, width: side, height: side }, 1.0);
     var cropCanvas = drawRegionToCanvas(sourceCanvas, region);
 
-    var rx = cropCanvas.width * 0.39;
-    var ry = cropCanvas.height * 0.5;
+    var rx = cropCanvas.width * 0.45;
+    var ry = cropCanvas.height * 0.47;
     var ecx = cropCanvas.width / 2, ecy = cropCanvas.height / 2;
 
     var maskCanvas = featheredMask(cropCanvas.width, cropCanvas.height, function (mctx) {
