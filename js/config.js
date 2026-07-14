@@ -53,9 +53,21 @@ App.CONFIG = (function () {
   var BOARD_HEIGHT = 600;
   var SPAWN_Y = 44;
   var DANGER_Y = 110;
-  var DANGER_TIME_MS = 2000;
+  var DANGER_TIME_MS = 3000;
   var SPAWN_GRACE_MS = 1000;
   var DROP_COOLDOWN_MS = 600;
+
+  // Combo / effects tuning (dopamine pass)
+  var COMBO_WINDOW_MS = 1000;
+  var COMBO_MAX_MULT = 5;
+  var SHAKE_TIER_MIN = 5;
+  var SHAKE_DURATION_MS = 150;
+  var SHAKE_AMPLITUDE = 4;
+  var POPUP_LIFE_MS = 800;
+  var PARTICLE_LIFE_MS = 500;
+  var QUIP_LIFE_MS = 900;
+  var EFFECTS_MAX = 60;
+  var MERGE_QUIPS = ['으악!', '합체!', '살려줘!', '으앙 붙었다!', '내가 더 커졌다!'];
 
   // Sprites are drawn slightly larger than the physics circle so fruits look
   // packed together instead of leaving visible gaps.
@@ -83,6 +95,16 @@ App.CONFIG = (function () {
     SPAWN_GRACE_MS: SPAWN_GRACE_MS,
     DROP_COOLDOWN_MS: DROP_COOLDOWN_MS,
     BALL_VISUAL_SCALE: BALL_VISUAL_SCALE,
+    COMBO_WINDOW_MS: COMBO_WINDOW_MS,
+    COMBO_MAX_MULT: COMBO_MAX_MULT,
+    SHAKE_TIER_MIN: SHAKE_TIER_MIN,
+    SHAKE_DURATION_MS: SHAKE_DURATION_MS,
+    SHAKE_AMPLITUDE: SHAKE_AMPLITUDE,
+    POPUP_LIFE_MS: POPUP_LIFE_MS,
+    PARTICLE_LIFE_MS: PARTICLE_LIFE_MS,
+    QUIP_LIFE_MS: QUIP_LIFE_MS,
+    EFFECTS_MAX: EFFECTS_MAX,
+    MERGE_QUIPS: MERGE_QUIPS,
     scoreForTier: scoreForTier
   };
 })();

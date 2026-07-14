@@ -380,9 +380,8 @@ button:not(:disabled):active {
   z-index: 20;
 }
 
-#watermelon-banner {
+.floating-banner {
   position: fixed;
-  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 1.8rem;
@@ -397,7 +396,15 @@ button:not(:disabled):active {
   text-align: center;
 }
 
-#watermelon-banner.pop {
+#watermelon-banner { top: 40%; }
+
+#record-banner {
+  top: 20%;
+  color: #d84315;
+  font-size: 1.4rem;
+}
+
+.floating-banner.pop {
   animation: bannerPop 2.6s ease forwards;
 }
 
@@ -407,6 +414,12 @@ button:not(:disabled):active {
   20% { transform: translate(-50%, -50%) scale(1); }
   80% { opacity: 1; }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
+#gameover-record {
+  font-weight: 800;
+  color: #d84315;
+  font-size: 1.1rem;
 }
 
 .overlay-card {

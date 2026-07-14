@@ -15,7 +15,7 @@
     <li>찾은 얼굴 확인하고 이름 붙이기</li>
     <li>다음 누르기</li>
   </ol>
-  <p class="hint hint-small">사진은 기기 밖으로 전송되지 않아요 · 얼굴 자동 인식에는 인터넷이 필요해요</p>
+  <p class="hint hint-small">사진은 기기 밖으로 전송되지 않아요 · 얼굴은 이 브라우저에만 저장돼 다음에도 유지돼요 · 자동 인식에는 인터넷이 필요해요</p>
   <button type="button" id="btn-upload" class="btn-primary-big">📷 사진 올리기<span class="btn-sub">얼굴 자동 인식</span></button>
   <input type="file" id="file-input" accept="image/*" multiple class="hidden">
   <div id="upload-status"></div>
@@ -73,6 +73,8 @@
     <div class="overlay-card">
       <h2>게임 오버!</h2>
       <p id="gameover-score"></p>
+      <p id="gameover-culprit"></p>
+      <p id="gameover-record" class="hidden">🏆 신기록!</p>
       <button type="button" id="btn-retry">다시하기</button>
       <button type="button" id="btn-retopic">주제 다시 뽑기</button>
       <button type="button" id="btn-restart-all">처음부터</button>
@@ -80,7 +82,8 @@
   </div>
 </section>
 
-<div id="watermelon-banner" class="hidden">🍉 수박 완성! 🎉</div>
+<div id="watermelon-banner" class="floating-banner hidden">🍉 수박 완성! 🎉</div>
+<div id="record-banner" class="floating-banner hidden">🔥 신기록 갱신 중!</div>
 
 <div id="loading-overlay" class="overlay hidden">
   <div class="overlay-card">
@@ -96,6 +99,7 @@
 <script src="js/config.js"></script>
 <script src="js/assets.js"></script>
 <script src="js/state.js"></script>
+<script src="js/faceStore.js"></script>
 <script src="js/sprites.js"></script>
 <script src="js/faceDetect.js"></script>
 <script src="js/screenUpload.js"></script>
