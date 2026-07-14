@@ -2,6 +2,7 @@ window.App = window.App || {};
 
 App.ScreenUpload = (function () {
   var manualCropActive = false;
+  var nameSaveTimer = null;
 
   function setStatus(text) {
     var el = document.getElementById('upload-status');
@@ -28,6 +29,7 @@ App.ScreenUpload = (function () {
     };
     App.state.faces.push(face);
     renderGallery();
+    App.FaceStore.save();
   }
 
   function renderGallery() {
@@ -47,6 +49,8 @@ App.ScreenUpload = (function () {
       nameInput.value = face.name;
       nameInput.addEventListener('input', function () {
         face.name = nameInput.value || face.name;
+        if (nameSaveTimer) clearTimeout(nameSaveTimer);
+        nameSaveTimer = setTimeout(function () { App.FaceStore.save(); }, 500);
       });
 
       var delBtn = document.createElement('button');
@@ -56,6 +60,7 @@ App.ScreenUpload = (function () {
       delBtn.addEventListener('click', function () {
         App.state.faces = App.state.faces.filter(function (f) { return f.id !== face.id; });
         renderGallery();
+        App.FaceStore.save();
       });
 
       card.appendChild(img);
@@ -239,6 +244,14 @@ App.ScreenUpload = (function () {
     App.FaceDetect.loadModels().catch(function () { /* reported on use */ });
 
     renderGallery();
+
+    // Restore faces saved from a previous visit.
+    App.FaceStore.load().then(function (faces) {
+      if (faces.length && App.state.faces.length === 0) {
+        App.state.faces = faces;
+        renderGallery();
+      }
+    });
   }
 
   return { init: init, renderGallery: renderGallery };

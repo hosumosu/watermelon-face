@@ -14,6 +14,7 @@ window.App = window.App || {};
       App.state.faces = [];
       App.state.tiers = [];
       App.state.topic = '';
+      App.FaceStore.save();
       App.ScreenUpload.renderGallery();
       App.showScreen('upload');
     });
