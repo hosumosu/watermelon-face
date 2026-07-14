@@ -6,6 +6,18 @@ App.ScreenUpload = (function () {
     if (el) el.textContent = text || '';
   }
 
+  function showLoading(message) {
+    var msg = document.getElementById('loading-message');
+    if (msg && message) msg.textContent = message;
+    var overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+  }
+
+  function hideLoading() {
+    var overlay = document.getElementById('loading-overlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+
   function addFaceToGallery(cropCanvas) {
     var face = {
       id: App.nextFaceId(),
@@ -121,15 +133,18 @@ App.ScreenUpload = (function () {
   }
 
   function processFile(file) {
-    setStatus('사진을 분석하는 중...');
+    showLoading('얼굴을 찾는 중이에요…');
+    setStatus('');
     return App.FaceDetect.fileToDownscaledCanvas(file, 1280)
       .catch(function () {
+        hideLoading();
         setStatus('이미지를 불러올 수 없습니다.');
         return Promise.reject(new Error('load-failed'));
       })
       .then(function (canvas) {
         return App.FaceDetect.detectFaces(canvas)
           .catch(function () {
+            hideLoading();
             setStatus('자동 얼굴 인식을 사용할 수 없어요 (인터넷 연결을 확인해주세요). 직접 잘라주세요.');
             return openManualCropForCanvas(canvas).then(function () {
               setStatus('');
@@ -138,6 +153,7 @@ App.ScreenUpload = (function () {
           })
           .then(function (detections) {
             if (detections === null) return;
+            hideLoading();
             if (detections.length === 0) {
               setStatus('이 사진에서 얼굴을 찾지 못했어요. 직접 잘라주세요.');
               return openManualCropForCanvas(canvas).then(function () {
@@ -151,7 +167,7 @@ App.ScreenUpload = (function () {
             setStatus('얼굴 ' + detections.length + '개를 찾았어요!');
           });
       })
-      .catch(function () { /* already reported via setStatus */ });
+      .catch(function () { hideLoading(); /* already reported via setStatus */ });
   }
 
   function handleFiles(fileList) {
@@ -164,19 +180,23 @@ App.ScreenUpload = (function () {
   }
 
   function handleManualFile(file) {
-    setStatus('사진을 불러오는 중...');
+    showLoading('사진을 불러오는 중이에요…');
     return App.FaceDetect.fileToDownscaledCanvas(file, 1280)
       .then(function (canvas) {
-        setStatus('');
+        hideLoading();
         return openManualCropForCanvas(canvas);
       })
       .catch(function () {
+        hideLoading();
         setStatus('이미지를 불러올 수 없습니다.');
       });
   }
 
   function init() {
     var fileInput = document.getElementById('file-input');
+    document.getElementById('btn-upload').addEventListener('click', function () {
+      fileInput.click();
+    });
     fileInput.addEventListener('change', function (e) {
       if (e.target.files && e.target.files.length) {
         handleFiles(e.target.files);
@@ -202,6 +222,10 @@ App.ScreenUpload = (function () {
         App.showScreen('topic');
       }
     });
+
+    // Warm up the detection models in the background so the first photo
+    // doesn't stall on the model download.
+    App.FaceDetect.loadModels().catch(function () { /* reported on use */ });
 
     renderGallery();
   }

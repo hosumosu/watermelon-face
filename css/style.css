@@ -66,9 +66,62 @@ button:not(:disabled):active {
   margin-bottom: 8px;
 }
 
-#btn-manual-mode {
-  background: #7d8ff0;
+.steps {
+  margin: 0 0 8px;
+  padding-left: 22px;
+  font-size: 0.95rem;
+  color: #5a4632;
+}
+
+.steps li { margin: 2px 0; }
+
+.hint-small { font-size: 0.78rem; margin-bottom: 10px; }
+
+.btn-primary-big {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  font-size: 1.15rem;
+  padding: 16px 32px;
+  margin: 6px 0 10px;
+  box-shadow: 0 4px 12px rgba(255,140,66,0.4);
+}
+
+.btn-primary-big .btn-sub {
+  font-size: 0.78rem;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+.btn-link {
+  background: transparent;
+  color: #5a6ad0;
+  text-decoration: underline;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 4px 8px;
   margin-bottom: 16px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 4px solid #ffd9b3;
+  border-top-color: #ff8c42;
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-sub {
+  font-size: 0.8rem;
+  color: #8a7861;
+  margin: 0;
 }
 
 #face-gallery {
