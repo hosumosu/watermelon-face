@@ -11,7 +11,7 @@
 <section id="screen-upload" class="screen active">
   <h1>얼굴 수박게임 🍉</h1>
   <ol class="steps">
-    <li>사진 올리기 (여러 장 가능)</li>
+    <li>사진 올리기 (여러 장, 최대 9명)</li>
     <li>찾은 얼굴 확인하고 이름 붙이기</li>
     <li>다음 누르기</li>
   </ol>
@@ -34,6 +34,7 @@
   </div>
 
   <div id="face-gallery"></div>
+  <p id="face-limit-note" class="hint hint-small hidden">얼굴이 9명을 넘으면 게임에는 9명만 랜덤으로 들어가요.</p>
   <button type="button" id="btn-to-topic" disabled>다음</button>
 </section>
 
@@ -78,6 +79,8 @@
     </div>
   </div>
 </section>
+
+<div id="watermelon-banner" class="hidden">🍉 수박 완성! 🎉</div>
 
 <div id="loading-overlay" class="overlay hidden">
   <div class="overlay-card">

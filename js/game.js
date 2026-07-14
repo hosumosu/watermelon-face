@@ -8,8 +8,12 @@ App.Game = (function () {
   var mergeQueue = [];
   var running = false;
   var rafId = null;
+  var lastFrameTime = 0;
+  var accumulator = 0;
+  var celebrateTimer = null;
   var dropLocked = false;
   var gameOverFlag = false;
+  var currentDropTierIndex = 0;
   var nextDropTierIndex = 0;
   var aimX = CONFIG.BOARD_WIDTH / 2;
   var inputBound = false;
@@ -63,6 +67,7 @@ App.Game = (function () {
   }
 
   function prepareNextDrop() {
+    currentDropTierIndex = nextDropTierIndex;
     nextDropTierIndex = randomDroppableTier();
     var preview = document.getElementById('next-preview');
     if (preview && App.state.tiers[nextDropTierIndex]) {
@@ -128,9 +133,21 @@ App.Game = (function () {
       removeBall(a);
       removeBall(b);
       spawnBall(newTier, clampedX, midY, 0, -1.5);
+      if (newTier === CONFIG.TIER_RADII.length - 1) celebrateWatermelon();
       addScore(CONFIG.scoreForTier(newTier));
       playPop();
     }
+  }
+
+  function celebrateWatermelon() {
+    var banner = document.getElementById('watermelon-banner');
+    if (!banner) return;
+    banner.classList.remove('hidden');
+    banner.classList.remove('pop');
+    void banner.offsetWidth;
+    banner.classList.add('pop');
+    if (celebrateTimer) clearTimeout(celebrateTimer);
+    celebrateTimer = setTimeout(function () { banner.classList.add('hidden'); }, 2600);
   }
 
   function updateDangerTimers(dt) {
@@ -209,19 +226,19 @@ App.Game = (function () {
     }
 
     canvas.addEventListener('pointermove', function (e) {
-      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[nextDropTierIndex]);
+      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[currentDropTierIndex]);
     });
 
     canvas.addEventListener('pointerdown', function (e) {
       e.preventDefault();
       try { canvas.setPointerCapture(e.pointerId); } catch (e2) {}
       aiming = true;
-      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[nextDropTierIndex]);
+      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[currentDropTierIndex]);
     });
 
     canvas.addEventListener('pointerup', function (e) {
       if (!aiming) return;
-      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[nextDropTierIndex]);
+      aimX = clampX(pointerXFromEvent(e), CONFIG.TIER_RADII[currentDropTierIndex]);
       aiming = false;
       dropCurrent();
     });
@@ -236,7 +253,7 @@ App.Game = (function () {
   function dropCurrent() {
     if (dropLocked || gameOverFlag || !running) return;
     dropLocked = true;
-    var tierIndex = nextDropTierIndex;
+    var tierIndex = currentDropTierIndex;
     var r = CONFIG.TIER_RADII[tierIndex];
     var x = clampX(aimX, r);
     spawnBall(tierIndex, x, CONFIG.SPAWN_Y, 0, 0);
@@ -273,9 +290,9 @@ App.Game = (function () {
     }
 
     if (!gameOverFlag) {
-      var nextTier = App.state.tiers[nextDropTierIndex];
+      var nextTier = App.state.tiers[currentDropTierIndex];
       if (nextTier && nextTier.spriteCanvas) {
-        var previewR = CONFIG.TIER_RADII[nextDropTierIndex];
+        var previewR = CONFIG.TIER_RADII[currentDropTierIndex];
         var previewVr = previewR * CONFIG.BALL_VISUAL_SCALE;
         var sprite2 = nextTier.spriteCanvas;
         ctx.save();
@@ -294,11 +311,23 @@ App.Game = (function () {
     }
   }
 
-  function loop() {
+  // Fixed-timestep loop: rAF fires at the display's refresh rate (60/90/120Hz),
+  // so physics must advance by real elapsed time, not once per frame.
+  var FIXED_DT = 1000 / 60;
+
+  function loop(timestamp) {
     if (!running) return;
-    Matter.Engine.update(engine, 1000 / 60);
-    processMergeQueue();
-    updateDangerTimers(1000 / 60);
+    if (!lastFrameTime) lastFrameTime = timestamp;
+    var elapsed = timestamp - lastFrameTime;
+    lastFrameTime = timestamp;
+    if (elapsed > 250) elapsed = 250;
+    accumulator += elapsed;
+    while (accumulator >= FIXED_DT) {
+      Matter.Engine.update(engine, FIXED_DT);
+      processMergeQueue();
+      updateDangerTimers(FIXED_DT);
+      accumulator -= FIXED_DT;
+    }
     drawBoard();
     rafId = requestAnimationFrame(loop);
   }
@@ -343,8 +372,13 @@ App.Game = (function () {
     var topicEl = document.getElementById('topic-banner');
     if (topicEl) topicEl.textContent = App.state.topic;
     hideGameOverOverlay();
+    var banner = document.getElementById('watermelon-banner');
+    if (banner) banner.classList.add('hidden');
     renderLadder();
+    nextDropTierIndex = randomDroppableTier();
     prepareNextDrop();
+    lastFrameTime = 0;
+    accumulator = 0;
     running = true;
     rafId = requestAnimationFrame(loop);
   }
@@ -357,6 +391,8 @@ App.Game = (function () {
       Matter.Events.off(engine, 'collisionStart', onCollisionStart);
       Matter.World.clear(world, false);
       Matter.Engine.clear(engine);
+      engine = null;
+      world = null;
     }
   }
 

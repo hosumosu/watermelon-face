@@ -2,6 +2,7 @@ window.App = window.App || {};
 
 App.ScreenReveal = (function () {
   var skip = false;
+  var runToken = 0;
 
   function sleep(ms) {
     return new Promise(function (resolve) {
@@ -47,6 +48,7 @@ App.ScreenReveal = (function () {
   }
 
   async function runReveal() {
+    var token = ++runToken;
     skip = false;
     var container = document.getElementById('reveal-cards');
     container.innerHTML = '';
@@ -61,9 +63,11 @@ App.ScreenReveal = (function () {
     // Tiers ascend → ranks descend, so the punchline (1위) is revealed last.
 
     for (var i = 0; i < entries.length; i++) {
+      if (token !== runToken) return;
       await revealOne(entries[i], i === entries.length - 1, container);
     }
 
+    if (token !== runToken) return;
     document.getElementById('btn-reveal-skip').classList.add('hidden');
     document.getElementById('btn-reveal-continue').classList.remove('hidden');
   }

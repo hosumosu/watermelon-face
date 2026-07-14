@@ -1,6 +1,8 @@
 window.App = window.App || {};
 
 App.ScreenUpload = (function () {
+  var manualCropActive = false;
+
   function setStatus(text) {
     var el = document.getElementById('upload-status');
     if (el) el.textContent = text || '';
@@ -64,9 +66,17 @@ App.ScreenUpload = (function () {
 
     var nextBtn = document.getElementById('btn-to-topic');
     if (nextBtn) nextBtn.disabled = App.state.faces.length === 0;
+
+    var limitNote = document.getElementById('face-limit-note');
+    if (limitNote) limitNote.classList.toggle('hidden', App.state.faces.length <= 9);
   }
 
   function openManualCropForCanvas(sourceCanvas) {
+    if (manualCropActive) {
+      setStatus('먼저 열려 있는 크롭 작업을 완료해주세요.');
+      return Promise.resolve();
+    }
+    manualCropActive = true;
     return new Promise(function (resolve) {
       var panel = document.getElementById('manual-crop-panel');
       var mcanvas = document.getElementById('manual-canvas');
@@ -117,6 +127,7 @@ App.ScreenUpload = (function () {
       }
 
       function cleanup() {
+        manualCropActive = false;
         panel.classList.add('hidden');
         mcanvas.removeEventListener('pointerdown', onPointer);
         sizeInput.removeEventListener('input', redraw);

@@ -380,6 +380,35 @@ button:not(:disabled):active {
   z-index: 20;
 }
 
+#watermelon-banner {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: rgba(255,255,255,0.95);
+  color: #2e7d32;
+  padding: 18px 30px;
+  border-radius: 20px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+  z-index: 15;
+  pointer-events: none;
+  text-align: center;
+}
+
+#watermelon-banner.pop {
+  animation: bannerPop 2.6s ease forwards;
+}
+
+@keyframes bannerPop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+
 .overlay-card {
   background: white;
   border-radius: 16px;
