@@ -7,16 +7,20 @@ App.ScreenTopic = (function () {
     var total = App.CONFIG.TIER_COUNT;
     var tiers = new Array(total).fill(null);
 
-    // The final tier is always the watermelon.
+    // The final tier is always the watermelon — the game's goal, not a rank.
     tiers[total - 1] = { type: 'watermelon' };
 
-    // Faces land on random tiers among 1~9 (index 0~8); at most 9 are used.
-    var faces = App.shuffle(App.state.faces).slice(0, total - 1);
+    // Ranking is among people only: a random order gives rank 1..N.
+    var ranked = App.shuffle(App.state.faces).slice(0, total - 1);
+
+    // Faces occupy random tiers among 1~9 (index 0~8), but rank order is
+    // preserved: higher rank → higher tier (closer to the watermelon).
     var slots = [];
     for (var i = 0; i < total - 1; i++) slots.push(i);
-    slots = App.shuffle(slots).slice(0, faces.length);
+    slots = App.shuffle(slots).slice(0, ranked.length).sort(function (a, b) { return a - b; });
     slots.forEach(function (tierIdx, idx) {
-      tiers[tierIdx] = { type: 'face', face: faces[idx] };
+      var rank = ranked.length - idx;
+      tiers[tierIdx] = { type: 'face', face: ranked[rank - 1], rank: rank };
     });
 
     // Remaining tiers use the fixed fruit lineup.

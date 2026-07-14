@@ -10,10 +10,6 @@ App.ScreenReveal = (function () {
     });
   }
 
-  function rankLabel(tierIndex) {
-    return (App.CONFIG.TIER_COUNT - tierIndex) + '위';
-  }
-
   function buildCard(entry, isLast) {
     var card = document.createElement('div');
     card.className = 'reveal-card' + (isLast ? ' reveal-card-final' : '');
@@ -27,13 +23,8 @@ App.ScreenReveal = (function () {
     var img = document.createElement('img');
     var caption = document.createElement('div');
     caption.className = 'reveal-caption';
-    if (entry.type === 'watermelon') {
-      img.src = App.CONFIG.WATERMELON_IMAGE;
-      caption.textContent = '1위 · 수박 🍉';
-    } else {
-      img.src = entry.face.canvas.toDataURL();
-      caption.textContent = rankLabel(entry.tierIndex) + ' · ' + entry.face.name;
-    }
+    img.src = entry.face.canvas.toDataURL();
+    caption.textContent = entry.rank + '위 · ' + entry.face.name;
     front.appendChild(img);
     front.appendChild(caption);
 
@@ -64,11 +55,10 @@ App.ScreenReveal = (function () {
     document.getElementById('btn-reveal-skip').classList.remove('hidden');
 
     var entries = [];
-    App.state.tiers.forEach(function (t, i) {
-      if (t.type === 'face') entries.push({ type: 'face', face: t.face, tierIndex: i });
+    App.state.tiers.forEach(function (t) {
+      if (t.type === 'face') entries.push({ face: t.face, rank: t.rank });
     });
-    // The watermelon is always rank 1 — revealed last for the punchline.
-    entries.push({ type: 'watermelon' });
+    // Tiers ascend → ranks descend, so the punchline (1위) is revealed last.
 
     for (var i = 0; i < entries.length; i++) {
       await revealOne(entries[i], i === entries.length - 1, container);
